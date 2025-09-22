@@ -5,8 +5,8 @@ services:
     container_name: ecommerce-db1
     restart: always
     environment:
-      MYSQL_DATABASE: ecommerce
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: expense_tracker
+      MYSQL_ROOT_PASSWORD: 12345
     ports:
       - "3307:3306"
     volumes:
@@ -23,12 +23,12 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: ecommerce-backend1
+    container_name: expense-backend1
     restart: always
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/ecommerce
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/expense
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_PASSWORD: 12345
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
     depends_on:
       db:
@@ -36,13 +36,13 @@ services:
     ports:
       - "8083:8080"
     networks:
-      - ecommerce-net
+      - expense-net
 
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
-    container_name: ecommerce-frontend1
+    container_name: expense-frontend1
     restart: always
     ports:
       - "8082:8080"
