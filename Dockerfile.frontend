@@ -6,7 +6,7 @@
     RUN apt-get update && apt-get install -y git
     
     # Clone your frontend repo
-    RUN git clone https://github.com/srithars/s207-ecomm-frontend-docker.git .
+    RUN git clone https://github.com/2300030863/Expense_Tracker.git .
     
     RUN npm install
     RUN npm run build
@@ -16,7 +16,7 @@
     RUN rm -rf /usr/local/tomcat/webapps/*
 
     # Copy React build output into Tomcat webapps
-    COPY --from=build-stage /app/dist /usr/local/tomcat/webapps/ecommerce
+    COPY --from=build-stage /app/dist /usr/local/tomcat/webapps/expensetrack
 
     EXPOSE 8082
     CMD ["catalina.sh", "run"]
