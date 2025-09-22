@@ -1,24 +1,28 @@
-    # Stage 1: Build with Maven and Java 21
-    FROM maven:3.9.6-eclipse-temurin-21 AS build
+# Stage 1: Build with Maven and Java 21
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 
-    WORKDIR /app
-    
-    # Install git to allow repo cloning
-    RUN apt-get update && apt-get install -y git
-    
-    # Clone your backend repo
-    RUN git clone https://github.com/2300030863/Expense_Tracker_Backend.git .
+WORKDIR /app
 
-    RUN mvn clean package -DskipTests
+# Install git to allow repo cloning
+RUN apt-get update && apt-get install -y git
 
-    # Stage 2: Run with Tomcat
-    FROM tomcat:9.0-jdk17-temurin
+# Clone your backend repo
+RUN git clone https://github.com/2300030863/Expense_Tracker_Backend.git .
 
-    # Remove default apps
-    RUN rm -rf /usr/local/tomcat/webapps/*
+# If pom.xml is inside a folder (e.g. backend/), switch to that folder
+WORKDIR /app/backend   # <-- change this if pom.xml is in a subfolder
 
-    # Copy backend WAR to Tomcat
-    COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/back1.war
+# Build backend
+RUN mvn clean package -DskipTests
 
-    EXPOSE 8080
-    CMD ["catalina.sh", "run"]    
+# Stage 2: Run with Tomcat
+FROM tomcat:9.0-jdk17-temurin
+
+# Remove default apps
+RUN rm -rf /usr/local/tomcat/webapps/*
+
+# Copy backend WAR to Tomcat
+COPY --from=build /app/backend/target/*.war /usr/local/tomcat/webapps/ROOT.war
+
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
